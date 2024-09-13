@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Prediction</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mt-5">Upgrade Probability Prediction</h2>
+        <form id="predictionForm" class="mt-4">
+            <div class="form-group">
+                <label for="spending">Spending History</label>
+                <input type="number" class="form-control" id="spending" placeholder="Enter spending history" required>
+            </div>
+            <div class="form-group">
+                <label for="products">Number of Products Bought</label>
+                <input type="number" class="form-control" id="products" placeholder="Enter number of products bought" required>
+            </div>
+            <div class="form-group">
+                <label for="avg_price">Average Price of Products</label>
+                <input type="number" class="form-control" id="avg_price" placeholder="Enter average price of products" required>
+            </div>
+            <div class="form-group">
+                <label for="frequency">Frequency of Purchases</label>
+                <input type="number" class="form-control" id="frequency" placeholder="Enter frequency of purchases" required>
+            </div>
+            <div class="form-group">
+                <label for="segment">Customer Segment</label>
+                <select class="form-control" id="segment">
+                    <option value="Low">Low</option>
+                    <option value="Medium">Medium</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tier">Subscription Tier</label>
+                <select class="form-control" id="tier">
+                    <option value="Basic">Basic</option>
+                    <option value="Standard">Standard</option>
+                    <option value="Premium">Premium</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+        </form>
+        
+        <h3 class="text-center mt-5" id="result"></h3>
+    </div>
+    
+    <script>
+        document.getElementById('predictionForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const data = {
+                Spending_History: parseFloat(document.getElementById('spending').value),
+                Num_Products_Bought: parseFloat(document.getElementById('products').value),
+                Avg_Price_Products: parseFloat(document.getElementById('avg_price').value),
+                Frequency_Purchases: parseFloat(document.getElementById('frequency').value),
+                Customer_Segment: document.getElementById('segment').value,
+                Subscription_Tier: document.getElementById('tier').value
+            };
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerHTML = `Upgrade Probability: ${result.upgrade_probability.toFixed(2)}%`;
+        });
+    </script>
+</body>
+</html>
